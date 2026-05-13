@@ -4,30 +4,42 @@
  */
 
 // 1. [PELANGGARAN SRP] - Menggabungkan data, UI, dan Persistence
+// 1. Class ini hanya bertanggung jawab sebagai data course
 class WebCourse {
     constructor(name, price, category) {
         this.name = name;
         this.price = price;
         this.category = category;
     }
+}
 
-    // Handles the UI representation of the course
-    getInfo() {
+// 2. Class ini hanya bertanggung jawab membuat tampilan HTML
+class CourseRenderer {
+    render(course) {
         return `
             <div class="course-card">
-                <h3>${this.name}</h3>
-                <p>Category: ${this.category}</p>
-                <div class="price">$${this.price}</div>
-                <button onclick="courseService.registerNewCourse('${this.name}')" class="btn">Enroll Now</button>
+                <h3>${course.name}</h3>
+                <p>Category: ${course.category}</p>
+                <div class="price">$${course.price}</div>
+                <button 
+                    onclick="courseService.registerNewCourse('${course.name}')" 
+                    class="btn">
+                    Enroll Now
+                </button>
             </div>
         `;
     }
+}
 
-    // Directly saves data to the local storage
-    save() {
+// 3. Class ini hanya bertanggung jawab menyimpan data course
+class CourseRepository {
+    save(course) {
         console.log("Connecting to core database...");
-        localStorage.setItem(`course_${this.name}`, JSON.stringify(this));
-        console.log(`Course ${this.name} has been successfully saved.`);
+        localStorage.setItem(
+            `course_${course.name}`,
+            JSON.stringify(course)
+        );
+        console.log(`Course ${course.name} has been successfully saved.`);
     }
 }
 
