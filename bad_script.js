@@ -47,23 +47,27 @@ class DatabaseManager {
 }
 
 // 3. [PELANGGARAN LSP] - Subclass merusak kontrak parent (throw error)
-class CourseSubscription {
+class Subscription {
     constructor(user) {
         this.user = user;
     }
+}
 
+class RenewableSubscription extends Subscription {
     renew() {
         console.log(`Subscription for ${this.user} has been renewed.`);
         alert("Success! Your subscription is extended.");
     }
 }
 
-class TrialSubscription extends CourseSubscription {
-    renew() {
-        console.error("Critical Error: Cannot renew trial account.");
-        throw new Error("System Failure: Trial accounts cannot call renew().");
+class TrialSubscription extends Subscription {
+
+    getRemainingDays() {
+        return 7;
     }
 }
+
+class PremiumSubscription extends RenewableSubscription {}
 
 // 4. [PELANGGARAN DIP] - Bergantung langsung pada DatabaseManager
 class CourseService {
