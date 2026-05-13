@@ -65,11 +65,13 @@ class TrialSubscription extends CourseSubscription {
     }
 }
 
-// 4. [PELANGGARAN DIP] - Bergantung langsung pada DatabaseManager
+// 4. [TELAH DIREFACTOR OLEH NIM 2023-170] - Memperbaiki Pelanggaran DIP
+// CourseService sekarang bergantung pada abstraksi (melalui Dependency Injection)
 class CourseService {
-    constructor() {
-        // Tight Coupling: Instansiasi langsung di constructor
-        this.db = new DatabaseManager();
+    // Constructor menerima instance database (Dependency Injection)
+    // sehingga tidak lagi terikat kuat dengan kelas DatabaseManager tertentu
+    constructor(databaseService) {
+        this.db = databaseService;
     }
 
     registerNewCourse(courseName) {
@@ -89,5 +91,6 @@ class CourseService {
     }
 }
 
-// Initialize global service
-const courseService = new CourseService();
+// Initialize global service dengan meng-inject dependency
+const dbInstance = new DatabaseManager();
+const courseService = new CourseService(dbInstance);
