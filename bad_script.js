@@ -32,19 +32,48 @@ class WebCourse {
 }
 
 // 2. [PELANGGARAN OCP] - Logika penyimpanan kaku (if-else)
-class DatabaseManager {
-    saveToStorage(data, engineType) {
-        if (engineType === 'MySQL') {
-            console.log("Writing data to MySQL tables...");
-        } else if (engineType === 'MongoDB') {
-            console.log("Inserting document into MongoDB collection...");
-        } else if (engineType === 'PostgreSQL') {
-            console.log("Executing SQL INSERT for PostgreSQL...");
-        } else {
-            console.log("Saving to default local storage...");
-        }
+// 1. Definisikan "Kontrak" (Interface/Base Class)
+class StorageEngine {
+    save(data) {
+        throw new Error("Metode save() harus diimplementasi!");
     }
 }
+
+// 2. Buat kelas spesifik untuk setiap jenis penyimpanan
+class MySQLStorage extends StorageEngine {
+    save(data) {
+        console.log("Writing data to MySQL tables...");
+    }
+}
+
+class MongoDBStorage extends StorageEngine {
+    save(data) {
+        console.log("Inserting document into MongoDB collection...");
+    }
+}
+
+class PostgreSQLStorage extends StorageEngine {
+    save(data) {
+        console.log("Executing SQL INSERT for PostgreSQL...");
+    }
+}
+
+// 3. DatabaseManager sekarang bersih dan tidak peduli jenis engine-nya
+class DatabaseManager {
+    saveToStorage(data, storageEngine) {
+        // Cukup panggil metode save tanpa peduli isinya apa (Polimorfisme)
+        storageEngine.save(data);
+    }
+}
+
+// --- Cara Penggunaan ---
+const manager = new DatabaseManager();
+
+const mySql = new MySQLStorage();
+manager.saveToStorage({ id: 1 }, mySql);
+
+const mongo = new MongoDBStorage();
+manager.saveToStorage({ id: 2 }, mongo);
 
 // 3. [PELANGGARAN LSP] - Subclass merusak kontrak parent (throw error)
 class CourseSubscription {
